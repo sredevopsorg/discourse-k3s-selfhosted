@@ -1,0 +1,9 @@
+ARG DISCOURSE_VERSION=test-passed
+
+# FROM ghcr.io/sredevopsdev/discourse-k3s-selfhosted:${DISCOURSE_VERSION} as discourse
+FROM ghcr.io/sredevopsdev/discourse-k3s-selfhosted:backend as discourse
+FROM nginx:alpine
+COPY --from=discourse /home/discourse/discourse/public /home/discourse/discourse/public
+COPY --from=discourse /home/discourse/discourse/plugins /home/discourse/discourse/plugins
+VOLUME /var/nginx/cache
+COPY frontend/default.conf.template /etc/nginx/templates/

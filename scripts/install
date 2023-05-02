@@ -10,6 +10,7 @@ echo "POSTGRES_PASSWORD=${PG_PASSWORD}" >> .env
 echo "SUBNET=${SUBNET:-0}" >> .env
 
 mkdir -p ./data/{assets,uploads,backups,redis,postgres}
+touch ./data/{assets,uploads,backups,redis,postgres}/.gitkeep
 
 chown -R 1000:1000 ./data/assets
 chown -R 1000:1000 ./data/uploads
