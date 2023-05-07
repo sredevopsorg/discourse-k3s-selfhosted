@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: discourse
-          image: docker.io/ngeorger/discourse-web-only:latest
+          image: docker.io/ngeorger/discourse-web-only:working
           command: ["/sbin/boot"]
           imagePullPolicy: Always
           ports:
@@ -48,6 +48,9 @@ spec:
             limits:
               memory: 1Gi
               cpu: 1000m
+            requests:
+              memory: 512Mi
+              cpu: 500m
           envFrom:
             - configMapRef:
                 name: discourse-config
@@ -56,6 +59,23 @@ spec:
               name: shared
             - mountPath: /var/log
               name: var-log
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+
       volumes:
         - name: shared
           hostPath:

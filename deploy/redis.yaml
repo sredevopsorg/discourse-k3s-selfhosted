@@ -19,7 +19,7 @@ spec:
       containers:
         - name: data
           # Should be the same as the image used in the containers/data.yml file.
-          image: docker.io/ngeorger/discourse-data:latest
+          image: docker.io/ngeorger/discourse-data:working
           command: ["/sbin/boot"]
           resources:
             requests:
