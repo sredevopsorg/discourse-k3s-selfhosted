@@ -19,3 +19,35 @@ spec:
     - hosts:
         - foro.sredevops.cl
       secretName: sredevops-cl-tls
+---
+# Redirect domain to subdomain.
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: discourse-ingress-redirect
+  namespace: discourse
+spec:
+  entryPoints:
+    - websecure
+  routes: # Matches TLD and www and redirects to foro.sredevops.cl
+    - match: Host(`sredevops.cl`) || Host(`www.sredevops.cl`)
+      kind: Rule
+      middlewares:
+        - name: redirect
+      services: # Redirects to foro.sredevops.cl
+        - name: discourse
+          port: 8080
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect
+  namespace: discourse
+spec:
+  redirectRegex: # TLD and www redirects to foro.sredevops.cl
+    regex: "^https://(www.)?sredevops.cl/(.*)"
+    replacement: "https://foro.sredevops.cl/$2"
+    permanent: false
+---
+
