@@ -69,3 +69,16 @@ Temporary Items
 # data/
 docker-compose.override.yml
 discourse/
+backups/**
+**.env
+**/**.env
+backend/plugin-list.template
+data/assets/.gitkeep
+data/backups/.gitkeep
+data/postgres/.gitkeep
+data/redis/.gitkeep
+data/uploads/.gitkeep
+frontend/default.conf.template
+pgsqldump/dump-discourse-202305050042.sql
+pgsqldump/dump-discourse-202305050042.tar
+pgsqldump/cleandump/dump-discourse-202305070323.sql

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: data
+  namespace: discourse
+  labels:
+    app: data
+spec:
+  serviceName: data
+  selector:
+    matchLabels:
+      app: data
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: data
+    spec:
+      containers:
+        - name: data
+          # Should be the same as the image used in the containers/data.yml file.
+          image: docker.io/ngeorger/discourse-data:latest
+          command: ["/sbin/boot"]
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: data-config
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+              name: data
+          volumeMounts:
+            - name: data
+              mountPath: /shared
+            - name: var-log
+              mountPath: /var/log
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/discourse/shared/data
+        - name: var-log
+          hostPath:
+            path: /var/discourse/shared/data/log/var-log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data
+  namespace: discourse
+spec:
+  selector:
+    app: data
+  type: ClusterIP
+  sessionAffinity: None
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+    - name: data
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+      # If you set the `spec.type` field to `NodePort` and you want a specific port number,
+      # you can specify a value in the `spec.ports[*].nodePort` field.
+      # nodePort:

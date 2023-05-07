@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: discourse-ingress
+  namespace: discourse
+spec:
+  rules:
+    - host: foro.sredevops.cl
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: discourse
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - foro.sredevops.cl
+      secretName: sredevops-cl-tls
