@@ -16,6 +16,8 @@ spec:
       labels:
         app: data
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       containers:
         - name: data
           # Should be the same as the image used in the containers/data.yml file.
