@@ -20,7 +20,6 @@ spec:
       # you can specify a value in the `spec.ports[*].nodePort` field.
       # nodePort:
 ---
-# + /usr/bin/docker run --shm-size=512m --link data:data -d --restart=always -e LANG=en_US.UTF-8 -e RAILS_ENV=production -e UNICORN_WORKERS=4 -e UNICORN_SIDEKIQS=1 -e RUBY_GLOBAL_METHOD_CACHE_SIZE=131072 -e RUBY_GC_HEAP_GROWTH_MAX_SLOTS=40000 -e RUBY_GC_HEAP_INIT_SLOTS=400000 -e RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=1.5 -e DISCOURSE_DB_SOCKET= -e DISCOURSE_DB_HOST=data -e DISCOURSE_DB_PORT= -e LC_ALL=en_US.UTF-8 -e LANGUAGE=en_US.UTF-8 -e DISCOURSE_HOSTNAME=foro.sredevops.cl -e 'DISCOURSE_DEVELOPER_EMAILS=ngeorger@gmail.com' -e DISCOURSE_SMTP_ADDRESS=smtp.gmail.com -e DISCOURSE_SMTP_PORT=587 -e DISCOURSE_SMTP_USER_NAME=apps@elclaustro.cl -e 'DISCOURSE_SMTP_PASSWORD=0c1N0c1N!' -e DISCOURSE_SMTP_ENABLE_START_TLS=true -e DISCOURSE_SMTP_DOMAIN=elclaustro.cl -e DISCOURSE_NOTIFICATION_EMAIL=noreply@foro.sredevops.cl -e LETSENCRYPT_ACCOUNT_EMAIL=info@sredevops.cl -e 'DISCOURSE_DB_PASSWORD=0c1N0c1N0c1N!' -e DISCOURSE_REDIS_HOST=data -h mb-air-web-only -e DOCKER_HOST_IP=172.17.0.1 --name web_only -t -p 80:80 -p 443:443 -v /var/discourse/shared/web-only:/shared -v /var/discourse/shared/web-only/log/var-log:/var/log --mac-address 02:cc:9c:2c:75:c4 local_discourse/web_only /sbin/boot
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +35,8 @@ spec:
       labels:
         app: discourse
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       containers:
         - name: discourse
           image: docker.io/ngeorger/discourse-web-only:working
@@ -46,8 +47,8 @@ spec:
             - containerPort: 443
           resources:
             limits:
-              memory: 1Gi
-              cpu: 1000m
+              memory: 2Gi
+              cpu: 1200m
             requests:
               memory: 512Mi
               cpu: 500m

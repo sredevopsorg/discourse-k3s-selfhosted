@@ -45,7 +45,7 @@ volumes:
 #   after_postgres:
 #     - exec:
 #         stdin: |
-#           alter user discourse with password '';
+#           alter user discourse with password 'nuevopassword';
 #         cmd: su - postgres -c 'psql discourse'
 
 #         raise_on_fail: false

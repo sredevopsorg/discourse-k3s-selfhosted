@@ -8,9 +8,9 @@ spec:
     app: postgres
   type: ClusterIP
   # sessionAffinity: None
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: 10800
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800
   ports:
     - name: postgres
       protocol: TCP
@@ -22,7 +22,7 @@ spec:
 ---
 apiVersion: apps/v1
 kind: StatefulSet
-# Only schedule pods on nodes with specific hostname "mb-air".
+# Only schedule pods on nodes with specific hostname "mb-air": nodeSelector: hostname: mb-air
 metadata:
   name: postgres
   namespace: discourse
@@ -40,9 +40,12 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       containers:
         - name: postgres
           image: postgres:13.10-bullseye # postgres:latest
+          # Select only specific node(s) to schedule the pod on:
           resources:
             requests:
               cpu: 0m
